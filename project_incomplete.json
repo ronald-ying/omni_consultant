@@ -1,0 +1,12 @@
+{
+  "project_name": "Incomplete Highway Project",
+  "facility_type": "urban interstate",
+  "project_description": "Potential capacity improvement",
+  "design_year": 2045,
+  "design_year_aadt": null,
+  "adds_significant_capacity": null,
+  "near_populated_area": null,
+  "major_intermodal_freight_facility": false,
+  "meaningful_truck_traffic_change": null,
+  "notes": "Incomplete screening test"
+}

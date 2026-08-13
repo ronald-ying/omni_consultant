@@ -179,6 +179,17 @@ For the assessment:
 - do not assume missing project information;
 - state that the result is a preliminary screening recommendation,
   not a substitute for agency coordination or professional judgment.
+- Treat null, None, unknown, blank, or omitted values as missing information.
+- Never infer a missing project fact from the project description.
+- If one or more decision-critical facts needed to select an FHWA category are missing, select:
+  "Cannot determine from the available facts"
+  unless the known facts independently establish a category.
+- Identify which missing facts are decision-critical and explain why each matters under FHWA guidance.
+- Separate:
+  Known project facts
+  Missing project facts
+  FHWA screening criteria
+  Preliminary conclusion
 """
 
     return ask_consultant(question)

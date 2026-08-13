@@ -2,10 +2,18 @@ import json
 from pathlib import Path
 
 from consultant import assess_project
-
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent
-PROJECT_PATH = BASE_DIR / "project.json"
+
+
+project_filename = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else "project.json"
+)
+
+PROJECT_PATH = BASE_DIR / project_filename
 
 
 def main():
