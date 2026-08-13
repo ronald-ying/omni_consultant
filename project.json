@@ -1,0 +1,12 @@
+{
+  "project_name": "Test Highway Project",
+  "facility_type": "urban interstate",
+  "project_description": "Add one general-purpose lane in each direction",
+  "design_year": 2045,
+  "design_year_aadt": 145000,
+  "adds_significant_capacity": true,
+  "near_populated_area": true,
+  "major_intermodal_freight_facility": false,
+  "meaningful_truck_traffic_change": false,
+  "notes": "Training example only"
+}

@@ -134,3 +134,51 @@ Additional source-grounding rules:
         "answer": response.output_text,
         "sources": extract_cited_pages(response),
     }
+
+
+def assess_project(project_facts):
+    """Screen a project's likely FHWA MSAT analysis category."""
+
+    if not isinstance(project_facts, dict):
+        raise ValueError("project_facts must be a dictionary.")
+
+    project_lines = []
+
+    for field, value in project_facts.items():
+        readable_field = field.replace("_", " ").title()
+        project_lines.append(f"- {readable_field}: {value}")
+
+    project_description = "\n".join(project_lines)
+
+    question = f"""
+Evaluate the following project under the FHWA MSAT guidance.
+
+PROJECT FACTS
+=============
+{project_description}
+
+TASK
+====
+Provide a preliminary MSAT screening assessment.
+
+Determine, based only on the supplied project facts and retrieved FHWA
+guidance, which of the following appears most applicable:
+
+1. No meaningful potential MSAT effects / exempt
+2. Low potential MSAT effects / qualitative analysis
+3. Higher potential MSAT effects / quantitative analysis
+4. Cannot determine from the available facts
+
+For the assessment:
+
+- explain the reasoning;
+- cite the FHWA source and electronic PDF page supporting each
+  screening criterion;
+- distinguish supplied project facts from FHWA requirements or guidance;
+- identify every material fact that is still missing;
+- do not assume missing project information;
+- state that the result is a preliminary screening recommendation,
+  not a substitute for agency coordination or professional judgment.
+"""
+
+    return ask_consultant(question)
