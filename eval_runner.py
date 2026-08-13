@@ -1,11 +1,10 @@
 import json
-import os
 import re
 import subprocess
-import sys
 from pathlib import Path
 from typing import Any
 import unicodedata
+from consultant import ask_consultant
 
 DASH_TRANSLATION = str.maketrans(
     {
@@ -111,26 +110,29 @@ def extract_source_pages(output: str) -> dict[str, set[int]]:
 
 
 def run_application(question: str) -> tuple[int, str]:
-    """Run the existing interactive app and supply one question."""
+    """Call the consultant engine directly."""
 
-    environment = os.environ.copy()
+    try:
+        result = ask_consultant(question)
 
-    # Keep Windows terminal encoding predictable.
-    environment["PYTHONIOENCODING"] = "utf-8"
+        output = result["answer"]
 
-    completed = subprocess.run(
-        [sys.executable, str(APP_PATH)],
-        input=f"{question}\n",
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        cwd=BASE_DIR,
-        env=environment,
-        timeout=240,
-        check=False,
-    )
+        if result["sources"]:
+            output += "\n\nRetrieved source pages:\n"
 
+            for source in result["sources"]:
+                if source["page"] is not None:
+                    output += (
+                        f"- {source['filename']}, "
+                        f"electronic PDF page {source['page']}\n"
+                    )
+                else:
+                    output += f"- {source['filename']}\n"
+
+        return 0, output
+
+    except Exception as error:
+        return 1, f"ERROR: {error}"
     output = completed.stdout
 
     if completed.stderr:
@@ -243,12 +245,6 @@ def main() -> int:
 
         try:
             passed, failures, output = evaluate_case(case)
-        except subprocess.TimeoutExpired:
-            print("  FAIL: Request exceeded 240 seconds.\n")
-            failed_outputs.append(
-                (case_id, "Request timed out.")
-            )
-            continue
         except Exception as error:
             print(f"  FAIL: Unexpected error: {error}\n")
             failed_outputs.append(
