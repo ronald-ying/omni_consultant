@@ -193,3 +193,106 @@ For the assessment:
 """
 
     return ask_consultant(question)
+def draft_screening_memo(project_facts):
+    """Draft an FHWA-grounded MSAT screening memorandum."""
+
+    if not isinstance(project_facts, dict):
+        raise ValueError("project_facts must be a dictionary.")
+
+    project_lines = []
+
+    for field, value in project_facts.items():
+        readable_field = field.replace("_", " ").title()
+
+        if value is None:
+            display_value = "Not provided"
+        else:
+            display_value = value
+
+        project_lines.append(
+            f"- {readable_field}: {display_value}"
+        )
+
+    project_description = "\n".join(project_lines)
+
+    question = f"""
+Prepare a draft MSAT screening memorandum for the project below.
+
+PROJECT FACTS
+=============
+{project_description}
+
+MEMORANDUM REQUIREMENTS
+=======================
+
+Write a concise professional technical memorandum suitable for review
+by an environmental project manager or transportation air-quality lead.
+
+Use these sections:
+
+# MSAT Screening Memorandum
+
+## Project
+Identify the project name and basic project information supplied.
+
+## Purpose
+Briefly explain that the memorandum provides a preliminary screening
+under FHWA MSAT guidance.
+
+## Project Facts
+Summarize only facts explicitly supplied in the project data.
+Do not convert missing values into assumptions.
+
+## Preliminary MSAT Determination
+Select one:
+
+1. No meaningful potential MSAT effects / exempt
+2. Low potential MSAT effects / qualitative analysis
+3. Higher potential MSAT effects / quantitative analysis
+4. Cannot determine from the available facts
+
+State the determination clearly near the beginning.
+
+## FHWA Screening Basis
+Compare the supplied project facts against the applicable FHWA
+screening criteria.
+
+For every substantive FHWA criterion, cite:
+[original PDF filename, electronic PDF page number]
+
+Clearly distinguish:
+- supplied project facts;
+- FHWA guidance;
+- professional inference.
+
+## Missing Information
+Identify decision-critical information that is missing.
+
+Explain why each missing item matters.
+
+Do not infer missing information.
+
+## Recommended Next Steps
+Identify the next technical or coordination steps supported by the
+screening.
+
+## Limitations
+State that:
+- this is a preliminary screening assessment;
+- it is based only on supplied project information and retrieved FHWA
+  guidance;
+- it is not a substitute for agency coordination or professional
+  judgment.
+
+WRITING STANDARD
+================
+- Use professional environmental-consulting language.
+- Be concise.
+- Do not invent project facts.
+- Do not invent FHWA criteria.
+- Do not introduce outside regulatory requirements.
+- Do not state that a quantitative analysis is required unless the
+  supplied facts support that conclusion under the retrieved guidance.
+"""
+
+    return ask_consultant(question)
