@@ -193,6 +193,7 @@ For the assessment:
 """
 
     return ask_consultant(question)
+
 def draft_screening_memo(project_facts):
     """Draft an FHWA-grounded MSAT screening memorandum."""
 
@@ -215,6 +216,26 @@ def draft_screening_memo(project_facts):
 
     project_description = "\n".join(project_lines)
 
+    critical_fields = [
+        "design_year_aadt",
+        "adds_significant_capacity",
+        "near_populated_area",
+    ]
+
+    has_missing_screening_data = any(
+        project_facts.get(field) is None
+        for field in critical_fields
+    )
+
+    if has_missing_screening_data:
+        information_section_title = (
+            "Decision-Critical Missing Information"
+        )
+    else:
+        information_section_title = (
+            "Information Needed for Analysis Development"
+        )
+
     question = f"""
 Prepare a draft MSAT screening memorandum for the project below.
 
@@ -233,17 +254,21 @@ Use these sections:
 # MSAT Screening Memorandum
 
 ## Project
+
 Identify the project name and basic project information supplied.
 
 ## Purpose
+
 Briefly explain that the memorandum provides a preliminary screening
 under FHWA MSAT guidance.
 
 ## Project Facts
+
 Summarize only facts explicitly supplied in the project data.
 Do not convert missing values into assumptions.
 
 ## Preliminary MSAT Determination
+
 Select one:
 
 1. No meaningful potential MSAT effects / exempt
@@ -254,6 +279,7 @@ Select one:
 State the determination clearly near the beginning.
 
 ## FHWA Screening Basis
+
 Compare the supplied project facts against the applicable FHWA
 screening criteria.
 
@@ -261,23 +287,41 @@ For every substantive FHWA criterion, cite:
 [original PDF filename, electronic PDF page number]
 
 Clearly distinguish:
+
 - supplied project facts;
 - FHWA guidance;
 - professional inference.
 
-## Missing Information
-Identify decision-critical information that is missing.
+## {information_section_title}
 
-Explain why each missing item matters.
+Use this exact section title. Do not rename it.
 
-Do not infer missing information.
+If this section is "Decision-Critical Missing Information":
+- include only facts whose absence prevents the screening category
+  from being selected;
+- for the urban-highway higher-potential pathway, focus on:
+  significant/new capacity, design-year AADT, and proximity to
+  populated areas;
+- do not characterize truck traffic or vehicle mix as independently
+  decision-critical unless needed to resolve the applicable FHWA
+  screening pathway.
+
+If this section is "Information Needed for Analysis Development":
+- the preliminary screening category is already supportable;
+- identify information needed to scope or perform the subsequent
+  analysis;
+- do not describe these items as decision-critical screening
+  deficiencies.
 
 ## Recommended Next Steps
+
 Identify the next technical or coordination steps supported by the
 screening.
 
 ## Limitations
+
 State that:
+
 - this is a preliminary screening assessment;
 - it is based only on supplied project information and retrieved FHWA
   guidance;
@@ -286,6 +330,7 @@ State that:
 
 WRITING STANDARD
 ================
+
 - Use professional environmental-consulting language.
 - Be concise.
 - Do not invent project facts.
@@ -293,6 +338,57 @@ WRITING STANDARD
 - Do not introduce outside regulatory requirements.
 - Do not state that a quantitative analysis is required unless the
   supplied facts support that conclusion under the retrieved guidance.
+
+QA AND TECHNICAL WRITING RULES
+==============================
+
+- Treat the FHWA 140,000–150,000 AADT value as a screening range,
+  not an inflexible regulatory threshold.
+
+- Use FHWA's term "populated areas." Do not substitute "receptors"
+  or "sensitive receptors" for the screening criterion.
+
+- When discussing incomplete or unavailable information for
+  project-specific MSAT health-impact analysis, use Appendix C as the
+  primary FHWA source.
+
+- When describing detailed MOVES inputs or quantitative modeling
+  procedures, cite the FHWA quantitative MSAT/MOVES FAQ.
+
+- Every FHWA screening criterion, numerical range, or procedural
+  recommendation must have an inline source citation.
+
+- Clearly distinguish:
+  1. supplied project facts;
+  2. FHWA guidance;
+  3. professional inference.
+
+- Avoid repeating the same project fact or FHWA criterion in multiple
+  sections.
 """
 
-    return ask_consultant(question)
+    result = ask_consultant(question)
+
+    answer = result["answer"]
+
+    if has_missing_screening_data:
+        answer = answer.replace(
+            "## Missing Information\n\n"
+            "### Decision-Critical Missing Information",
+            "## Decision-Critical Missing Information",
+        )
+
+        answer = answer.replace(
+            "## Missing Information",
+            "## Decision-Critical Missing Information",
+        )
+
+    else:
+        answer = answer.replace(
+            "## Missing Information",
+            "## Information Needed for Analysis Development",
+        )
+
+    result["answer"] = answer
+
+    return result
