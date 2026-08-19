@@ -1,0 +1,195 @@
+{
+  "type": "object",
+  "properties": {
+    "project_name": {
+      "type": ["string", "null"]
+    },
+    "facility_type": {
+      "type": ["string", "null"]
+    },
+    "project_description": {
+      "type": ["string", "null"]
+    },
+    "design_year": {
+      "type": ["integer", "null"]
+    },
+    "design_year_aadt": {
+      "type": ["integer", "null"]
+    },
+    "adds_significant_capacity": {
+      "type": ["boolean", "null"]
+    },
+    "near_populated_area": {
+      "type": ["boolean", "null"]
+    },
+    "major_intermodal_freight_facility": {
+      "type": ["boolean", "null"]
+    },
+    "meaningful_truck_traffic_change": {
+      "type": ["boolean", "null"]
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "project_name": {
+          "type": ["string", "null"]
+        },
+        "facility_type": {
+          "type": ["string", "null"]
+        },
+        "project_description": {
+          "type": ["string", "null"]
+        },
+        "design_year": {
+          "type": ["string", "null"]
+        },
+        "design_year_aadt": {
+          "type": ["string", "null"]
+        },
+        "adds_significant_capacity": {
+          "type": ["string", "null"]
+        },
+        "near_populated_area": {
+          "type": ["string", "null"]
+        },
+        "major_intermodal_freight_facility": {
+          "type": ["string", "null"]
+        },
+        "meaningful_truck_traffic_change": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": [
+        "project_name",
+        "facility_type",
+        "project_description",
+        "design_year",
+        "design_year_aadt",
+        "adds_significant_capacity",
+        "near_populated_area",
+        "major_intermodal_freight_facility",
+        "meaningful_truck_traffic_change"
+      ],
+      "additionalProperties": false
+    },
+    "support": {
+      "type": "object",
+      "properties": {
+        "project_name": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "facility_type": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "project_description": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "design_year": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "design_year_aadt": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "adds_significant_capacity": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "near_populated_area": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "major_intermodal_freight_facility": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        },
+        "meaningful_truck_traffic_change": {
+          "type": "string",
+          "enum": [
+            "explicit",
+            "direct",
+            "inferred",
+            "unsupported"
+          ]
+        }
+      },
+      "required": [
+        "project_name",
+        "facility_type",
+        "project_description",
+        "design_year",
+        "design_year_aadt",
+        "adds_significant_capacity",
+        "near_populated_area",
+        "major_intermodal_freight_facility",
+        "meaningful_truck_traffic_change"
+      ],
+      "additionalProperties": false
+    },
+    "uncertainties": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "project_name",
+    "facility_type",
+    "project_description",
+    "design_year",
+    "design_year_aadt",
+    "adds_significant_capacity",
+    "near_populated_area",
+    "major_intermodal_freight_facility",
+    "meaningful_truck_traffic_change",
+    "evidence",
+    "support",
+    "uncertainties"
+  ],
+  "additionalProperties": false
+}

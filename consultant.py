@@ -5,7 +5,10 @@ import json
 
 from dotenv import load_dotenv
 from openai import OpenAI
-
+from discipline_config import (
+    load_discipline_json,
+    load_discipline_text,
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 INSTRUCTIONS_PATH = BASE_DIR / "instructions.txt"
@@ -654,162 +657,15 @@ def extract_project_facts_from_document(
 
     client = OpenAI()
 
-    schema = {
-        "type": "object",
-        "properties": {
-            "project_name": {
-                "type": ["string", "null"]
-            },
-            "facility_type": {
-                "type": ["string", "null"]
-            },
-            "project_description": {
-                "type": ["string", "null"]
-            },
-            "design_year": {
-                "type": ["integer", "null"]
-            },
-            "design_year_aadt": {
-                "type": ["integer", "null"]
-            },
-            "adds_significant_capacity": {
-                "type": ["boolean", "null"]
-            },
-            "near_populated_area": {
-                "type": ["boolean", "null"]
-            },
-            "major_intermodal_freight_facility": {
-                "type": ["boolean", "null"]
-            },
-            "meaningful_truck_traffic_change": {
-                "type": ["boolean", "null"]
-            },
-            "evidence": {
-                "type": "object",
-                "properties": {
-                    "project_name": {
-                        "type": ["string", "null"]
-                    },
-                    "facility_type": {
-                        "type": ["string", "null"]
-                    },
-                    "project_description": {
-                        "type": ["string", "null"]
-                    },
-                    "design_year": {
-                        "type": ["string", "null"]
-                    },
-                    "design_year_aadt": {
-                        "type": ["string", "null"]
-                    },
-                    "adds_significant_capacity": {
-                        "type": ["string", "null"]
-                    },
-                    "near_populated_area": {
-                        "type": ["string", "null"]
-                    },
-                    "major_intermodal_freight_facility": {
-                        "type": ["string", "null"]
-                    },
-                    "meaningful_truck_traffic_change": {
-                        "type": ["string", "null"]
-                    },
-                },
-                "required": [
-                    "project_name",
-                    "facility_type",
-                    "project_description",
-                    "design_year",
-                    "design_year_aadt",
-                    "adds_significant_capacity",
-                    "near_populated_area",
-                    "major_intermodal_freight_facility",
-                    "meaningful_truck_traffic_change",
-                ],
-                "additionalProperties": False,
-            },
-            "uncertainties": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                },
-            },
-        },
-        "required": [
-            "project_name",
-            "facility_type",
-            "project_description",
-            "design_year",
-            "design_year_aadt",
-            "adds_significant_capacity",
-            "near_populated_area",
-            "major_intermodal_freight_facility",
-            "meaningful_truck_traffic_change",
-            "evidence",
-            "uncertainties",
-        ],
-        "additionalProperties": False,
-    }
+    schema = load_discipline_json(
+        "msat",
+        "intake_schema.json",
+    )
 
-    instructions = """
-You are extracting project facts from a transportation project
-document.
-
-This is DOCUMENT INTAKE ONLY.
-
-Do not apply FHWA MSAT screening guidance.
-Do not use outside knowledge.
-Do not guess missing project facts.
-
-Answer only from the supplied project document.
-
-Extraction rules:
-
-1. If the document does not support an answer, return null.
-
-2. Preserve the distinction between:
-   - explicitly stated facts;
-   - reasonable direct extraction from the document;
-   - professional judgments that the document itself does not make.
-
-3. For design_year_aadt:
-   - return a value only if the document clearly identifies the
-     relevant design-year AADT;
-   - if multiple AADT values exist and the appropriate value is
-     ambiguous, return null and explain the ambiguity.
-
-4. For adds_significant_capacity:
-   - return true when the document explicitly establishes new or
-     significant/substantial capacity;
-   - return false only when the document supports that conclusion;
-   - otherwise return null.
-   - Do not independently decide that a lane addition is
-     "significant" unless the document supports that characterization.
-
-5. For near_populated_area:
-   - return true if the document establishes proximity to homes,
-     schools, businesses, populated areas, or equivalent development;
-   - return false only if the document supports that conclusion;
-   - otherwise return null.
-
-6. For major_intermodal_freight_facility:
-   - absence of discussion is not false;
-   - return null unless the document supports true or false.
-
-7. For meaningful_truck_traffic_change:
-   - absence of truck information is not false;
-   - return null unless the document supports true or false.
-
-8. project_description may be a concise grounded summary of the
-   proposed project.
-
-9. For every non-null answer, provide short source evidence.
-   Include the supplied PDF page, DOCX paragraph, or DOCX table marker
-   where available.
-
-10. Put conflicting, ambiguous, or important unresolved information
-    in uncertainties.
-"""
+    instructions = load_discipline_text(
+        "msat",
+        "intake_instructions.md",
+    )
 
     response = client.responses.create(
         model=MODEL,
